@@ -2,50 +2,102 @@ package Model;
 
 public class Clinician
 {
-    private String id;
-    private String name;
-    private String specialization;
+    private String clinicianId;
+    private String firstName;
+    private String lastName;
+    private String title;
+    private String speciality;
 
+    private String phoneNumber;
+    private String email;
 
-    public Clinician(String id, String name, String specialization) {
-        this.id = id;
-        this.name = name;
-        this.specialization = specialization;
+    private String workplaceId;
+    private String workplaceType;
+
+    private String employmentStatus;
+    private String startDate;
+
+    public Clinician(
+            String clinicianId,
+            String firstName,
+            String lastName,
+            String title,
+            String speciality,
+            String phoneNumber,
+            String email,
+            String workplaceId,
+            String workplaceType,
+            String employmentStatus,
+            String startDate
+    ) {
+        this.clinicianId = clinicianId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.title = title;
+        this.speciality = speciality;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.workplaceId = workplaceId;
+        this.workplaceType = workplaceType;
+        this.employmentStatus = employmentStatus;
+        this.startDate = startDate;
     }
 
-
-    public String getId() {
-        return id;
+    public String getClinicianId() {
+        return clinicianId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getSpecialization() {
-        return specialization;
+    public String getLastName() {
+        return lastName;
     }
 
-
-    public void setId(String id) {
-        this.id = id;
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setSpecialization(String specialization) {
-        this.specialization = specialization;
+    public String getSpeciality() {
+        return speciality;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getWorkplaceId() {
+        return workplaceId;
+    }
+
+    public String getWorkplaceType() {
+        return workplaceType;
+    }
+
+    public String getEmploymentStatus() {
+        return employmentStatus;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
 
     @Override
     public String toString() {
-        return "Professional{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", specialization='" + specialization + '\'' +
+        return "Clinician{" +
+                "id='" + clinicianId + '\'' +
+                ", name='" + getFullName() + '\'' +
+                ", speciality='" + speciality + '\'' +
+                ", workplace='" + workplaceId + '\'' +
                 '}';
     }
 }
