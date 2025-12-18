@@ -1,13 +1,13 @@
 package Model;
 
-public class Professional
+public class Clinician
 {
     private String id;
     private String name;
     private String specialization;
 
 
-    public Professional(String id, String name, String specialization) {
+    public Clinician(String id, String name, String specialization) {
         this.id = id;
         this.name = name;
         this.specialization = specialization;
