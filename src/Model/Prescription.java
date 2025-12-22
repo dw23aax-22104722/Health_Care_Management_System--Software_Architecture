@@ -1,132 +1,24 @@
 package Model;
 
-public class Prescription
-{
-    private String prescriptionId;
+public class Prescription {
+    private String id;
     private String patientId;
-    private String clinicianId;
-    private String appointmentId;
+    private String condition;
+    private String drug;
 
-    private String prescriptionDate;
-    private String medicationName;
-    private String dosage;
-    private String frequency;
-    private int durationDays;
-    private int quantity;
-    private String instructions;
-    private String pharmacyName;
-
-    private String status;
-    private String issueDate;
-    private String collectionDate;
-
-    public Prescription(
-            String prescriptionId,
-            String patientId,
-            String clinicianId,
-            String appointmentId,
-            String prescriptionDate,
-            String medicationName,
-            String dosage,
-            String frequency,
-            int durationDays,
-            int quantity,
-            String instructions,
-            String pharmacyName,
-            String status,
-            String issueDate,
-            String collectionDate
-    ) {
-        this.prescriptionId = prescriptionId;
+    public Prescription(String id, String patientId, String condition, String drug) {
+        this.id = id;
         this.patientId = patientId;
-        this.clinicianId = clinicianId;
-        this.appointmentId = appointmentId;
-        this.prescriptionDate = prescriptionDate;
-        this.medicationName = medicationName;
-        this.dosage = dosage;
-        this.frequency = frequency;
-        this.durationDays = durationDays;
-        this.quantity = quantity;
-        this.instructions = instructions;
-        this.pharmacyName = pharmacyName;
-        this.status = status;
-        this.issueDate = issueDate;
-        this.collectionDate = collectionDate;
+        this.condition = condition;
+        this.drug = drug;
     }
 
-    public String getPrescriptionId() {
-        return prescriptionId;
+    public String toCSV() {
+        return id + "," + patientId + "," + condition + "," + drug;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public String getClinicianId() {
-        return clinicianId;
-    }
-
-    public String getAppointmentId() {
-        return appointmentId;
-    }
-
-    public String getPrescriptionDate() {
-        return prescriptionDate;
-    }
-
-    public String getMedicationName() {
-        return medicationName;
-    }
-
-    public String getDosage() {
-        return dosage;
-    }
-
-    public String getFrequency() {
-        return frequency;
-    }
-
-    public int getDurationDays() {
-        return durationDays;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public String getPharmacyName() {
-        return pharmacyName;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getIssueDate() {
-        return issueDate;
-    }
-
-    public String getCollectionDate() {
-        return collectionDate;
-    }
-
-    public void markCollected(String collectionDate) {
-        this.status = "Collected";
-        this.collectionDate = collectionDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Prescription{" +
-                "id='" + prescriptionId + '\'' +
-                ", patient='" + patientId + '\'' +
-                ", medication='" + medicationName + '\'' +
-                ", dosage='" + dosage + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+    public static Prescription fromCSV(String line) {
+        String[] p = line.split(",");
+        return new Prescription(p[0], p[1], p[2], p[3]);
     }
 }
