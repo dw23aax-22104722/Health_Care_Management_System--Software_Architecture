@@ -1,118 +1,22 @@
 package Model;
 
-public class Appointment
-{
-    private String appointmentId;
+public class Appointment {
     private String patientId;
     private String clinicianId;
-    private String facilityId;
-    private String appointmentDate;
-    private String appointmentTime;
-    private int durationMinutes;
-    private String appointmentType;
-    private String status;
-    private String reasonForVisit;
-    private String notes;
-    private String createdDate;
-    private String lastModified;
+    private String date;
 
-    public Appointment(
-            String appointmentId,
-            String patientId,
-            String clinicianId,
-            String facilityId,
-            String appointmentDate,
-            String appointmentTime,
-            int durationMinutes,
-            String appointmentType,
-            String status,
-            String reasonForVisit,
-            String notes,
-            String createdDate,
-            String lastModified
-    ) {
-        this.appointmentId = appointmentId;
+    public Appointment(String patientId, String clinicianId, String date) {
         this.patientId = patientId;
         this.clinicianId = clinicianId;
-        this.facilityId = facilityId;
-        this.appointmentDate = appointmentDate;
-        this.appointmentTime = appointmentTime;
-        this.durationMinutes = durationMinutes;
-        this.appointmentType = appointmentType;
-        this.status = status;
-        this.reasonForVisit = reasonForVisit;
-        this.notes = notes;
-        this.createdDate = createdDate;
-        this.lastModified = lastModified;
+        this.date = date;
     }
 
-    public String getAppointmentId() {
-        return appointmentId;
+    public String toCSV() {
+        return patientId + "," + clinicianId + "," + date;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public String getClinicianId() {
-        return clinicianId;
-    }
-
-    public String getFacilityId() {
-        return facilityId;
-    }
-
-    public String getAppointmentDate() {
-        return appointmentDate;
-    }
-
-    public String getAppointmentTime() {
-        return appointmentTime;
-    }
-
-    public int getDurationMinutes() {
-        return durationMinutes;
-    }
-
-    public String getAppointmentType() {
-        return appointmentType;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getReasonForVisit() {
-        return reasonForVisit;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public String getLastModified() {
-        return lastModified;
-    }
-
-    public void updateStatus(String newStatus, String modifiedDate) {
-        this.status = newStatus;
-        this.lastModified = modifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "id='" + appointmentId + '\'' +
-                ", patient='" + patientId + '\'' +
-                ", clinician='" + clinicianId + '\'' +
-                ", date='" + appointmentDate + '\'' +
-                ", time='" + appointmentTime + '\'' +
-                ", type='" + appointmentType + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+    public static Appointment fromCSV(String line) {
+        String[] a = line.split(",");
+        return new Appointment(a[0], a[1], a[2]);
     }
 }
