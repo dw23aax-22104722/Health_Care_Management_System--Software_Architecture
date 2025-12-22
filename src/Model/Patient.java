@@ -3,6 +3,7 @@ package Model;
 import java.util.*;
 
 public class Patient {
+
     private String id;
     private String name;
     private String dob;
@@ -17,12 +18,14 @@ public class Patient {
     public String getName() { return name; }
     public String getDob() { return dob; }
 
-    public String toCSV() {
-        return id + "," + name + "," + dob;
-    }
-
     public static Patient fromCSV(String line) {
-        String[] p = line.split(",");
-        return new Patient(p[0], p[1], p[2]);
+        String[] parts = line.split(" ");
+
+        // patient_id first_name last_name dob ...
+        String id = parts[0];
+        String name = parts[1] + " " + parts[2];
+        String dob = parts[3];
+
+        return new Patient(id, name, dob);
     }
 }

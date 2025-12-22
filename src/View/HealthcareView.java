@@ -1,37 +1,47 @@
 package View;
 
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class HealthcareView extends JFrame {
 
-    public JTable patientTable, appointmentTable, prescriptionTable, referralTable;
+    public JTable patientTable, appointmentTable, prescriptionTable, referralTable, clinicianTable;
 
     public JButton addPatientBtn, editPatientBtn, deletePatientBtn;
     public JButton addAppointmentBtn, editAppointmentBtn, deleteAppointmentBtn;
-    public JButton addPrescriptionBtn, addReferralBtn;
+    public JButton addPrescriptionBtn, editPrescriptionBtn, deletePrescriptionBtn;
+    public JButton addReferralBtn, editReferralBtn, deleteReferralBtn;
+    public JButton addClinicianBtn, editClinicianBtn, deleteClinicianBtn;
 
     public HealthcareView() {
         setTitle("Healthcare Management System");
-        setSize(900, 600);
+        setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTabbedPane tabs = new JTabbedPane();
 
+        // PATIENT TABLE
         patientTable = new JTable(new DefaultTableModel(
                 new Object[]{"ID","Name","DOB"}, 0));
 
+        // APPOINTMENT TABLE
         appointmentTable = new JTable(new DefaultTableModel(
-                new Object[]{"Patient ID","Clinician ID","Date"}, 0));
+                new Object[]{"Appointment ID","Patient ID","Clinician ID","Date"}, 0));
 
+        // PRESCRIPTION TABLE
         prescriptionTable = new JTable(new DefaultTableModel(
-                new Object[]{"ID","Patient ID","Condition","Drug"}, 0));
+                new Object[]{"ID","Patient ID", "Clinician ID", "Medication name","Status"}, 0));
 
+        // REFERRAL TABLE
         referralTable = new JTable(new DefaultTableModel(
-                new Object[]{"ID","Patient ID","From","To","Reason"}, 0));
+                new Object[]{"ID","Patient ID","From","To"}, 0));
 
+        // CLINICIAN TABLE
+        clinicianTable = new JTable(new DefaultTableModel(
+                new Object[]{"Clinician ID","Name","Type"}, 0));
+
+        // BUTTONS
         addPatientBtn = new JButton("Add");
         editPatientBtn = new JButton("Edit");
         deletePatientBtn = new JButton("Delete");
@@ -40,13 +50,25 @@ public class HealthcareView extends JFrame {
         editAppointmentBtn = new JButton("Edit");
         deleteAppointmentBtn = new JButton("Delete");
 
-        addPrescriptionBtn = new JButton("Add Prescription");
-        addReferralBtn = new JButton("Add Referral");
+        addPrescriptionBtn = new JButton("Add");
+        editPrescriptionBtn = new JButton("Edit");
+        deletePrescriptionBtn = new JButton("Delete");
 
+        addReferralBtn = new JButton("Add");
+        editReferralBtn = new JButton("Edit");
+        deleteReferralBtn = new JButton("Delete");
+
+        addClinicianBtn = new JButton("Add");
+        editClinicianBtn = new JButton("Edit");
+        deleteClinicianBtn = new JButton("Delete");
+
+
+        // ADD TABS
         tabs.add("Patients", createPanel(patientTable, addPatientBtn, editPatientBtn, deletePatientBtn));
         tabs.add("Appointments", createPanel(appointmentTable, addAppointmentBtn, editAppointmentBtn, deleteAppointmentBtn));
-        tabs.add("Prescriptions", createPanel(prescriptionTable, addPrescriptionBtn));
-        tabs.add("Referrals", createPanel(referralTable, addReferralBtn));
+        tabs.add("Prescriptions", createPanel(prescriptionTable, addPrescriptionBtn, editPrescriptionBtn, deletePrescriptionBtn));
+        tabs.add("Referrals", createPanel(referralTable, addReferralBtn, editReferralBtn, deleteReferralBtn));
+        tabs.add("Clinicians", createPanel(clinicianTable, addClinicianBtn, editClinicianBtn, deleteClinicianBtn));
 
         add(tabs);
     }
@@ -60,4 +82,5 @@ public class HealthcareView extends JFrame {
         return p;
     }
 }
+
 
