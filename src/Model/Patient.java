@@ -14,9 +14,20 @@ public class Patient {
         this.dob = dob;
     }
 
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public String getDob() { return dob; }
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public String getDob()
+    {
+        return dob;
+    }
 
     public static Patient fromCSV(String line) {
         String[] parts = line.split(",");

@@ -26,7 +26,8 @@ public class Clinician {
         return role;
     }
 
-    public String toCSV() {
+    public String toCSV()
+    {
         return id + "," + name + "," + role;
     }
 

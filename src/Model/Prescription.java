@@ -16,11 +16,30 @@ public class Prescription {
         this.status = status;
     }
 
-    public String getId() { return id; }
-    public String getPatientId() { return patientId; }
-    public String getClinicianId() { return clinicianId; }
-    public String getMedication() { return medication; }
-    public String getStatus() { return status; }
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getPatientId()
+    {
+        return patientId;
+    }
+
+    public String getClinicianId()
+    {
+        return clinicianId;
+    }
+
+    public String getMedication()
+    {
+        return medication;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
 
     public static Prescription fromCSV(String line) {
         String[] parts = line.split(",");

@@ -21,27 +21,27 @@ public class HealthcareView extends JFrame {
 
         JTabbedPane tabs = new JTabbedPane();
 
-        // PATIENT TABLE
+        // Patient table
         patientTable = new JTable(new DefaultTableModel(
                 new Object[]{"ID","Name","DOB"}, 0));
 
-        // APPOINTMENT TABLE
+        // Appointment table
         appointmentTable = new JTable(new DefaultTableModel(
                 new Object[]{"Appointment ID","Patient ID","Clinician ID","Date"}, 0));
 
-        // PRESCRIPTION TABLE
+        // Prescription table
         prescriptionTable = new JTable(new DefaultTableModel(
                 new Object[]{"ID","Patient ID", "Clinician ID", "Medication name","Status"}, 0));
 
-        // REFERRAL TABLE
+        // Referral table
         referralTable = new JTable(new DefaultTableModel(
                 new Object[]{"ID","Patient ID","From","To"}, 0));
 
-        // CLINICIAN TABLE
+        // Clinician
         clinicianTable = new JTable(new DefaultTableModel(
                 new Object[]{"Clinician ID","Name","Type"}, 0));
 
-        // BUTTONS
+        // The buttons are grouped
         addPatientBtn = new JButton("Add");
         editPatientBtn = new JButton("Edit");
         deletePatientBtn = new JButton("Delete");

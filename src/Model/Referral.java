@@ -16,11 +16,25 @@ public class Referral {
 
     }
 
-    public String getId() { return id; }
-    public String getPatientId() { return patientId; }
-    public String getFromClinician() { return fromClinician; }
-    public String getToClinician() { return toClinician; }
+    public String getId()
+    {
+        return id;
+    }
 
+    public String getPatientId()
+    {
+        return patientId;
+    }
+
+    public String getFromClinician()
+    {
+        return fromClinician;
+    }
+
+    public String getToClinician()
+    {
+        return toClinician;
+    }
 
     public static Referral fromCSV(String line) {
         String[] parts = line.split(",");

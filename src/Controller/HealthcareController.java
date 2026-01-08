@@ -21,7 +21,7 @@ public class HealthcareController {
         registerListeners();
     }
 
-    /* ================= LOAD CSV ================= */
+    // Load csv
 
     private void loadData() {
 
@@ -71,11 +71,11 @@ public class HealthcareController {
         }
     }
 
-    /* ================= LISTENERS ================= */
+  // The listeners (Grouped by class)
 
     private void registerListeners() {
 
-        /* ---------- PATIENT ---------- */
+
 
         view.addPatientBtn.addActionListener(e -> {
             String id = input("Patient ID:");
@@ -100,7 +100,7 @@ public class HealthcareController {
 
         view.deletePatientBtn.addActionListener(e -> delete(view.patientTable));
 
-        /* ---------- CLINICIAN ---------- */
+
 
         view.addClinicianBtn.addActionListener(e -> {
             String id = input("Clinician ID:");
@@ -125,7 +125,7 @@ public class HealthcareController {
 
         view.deleteClinicianBtn.addActionListener(e -> delete(view.clinicianTable));
 
-        /* ---------- APPOINTMENT (GP ONLY) ---------- */
+
 
         view.addAppointmentBtn.addActionListener(e -> {
             String id = input("Appointment ID:");
@@ -178,7 +178,7 @@ public class HealthcareController {
 
         view.deleteAppointmentBtn.addActionListener(e -> delete(view.appointmentTable));
 
-        /* ---------- PRESCRIPTION ---------- */
+
 
         view.addPrescriptionBtn.addActionListener(e -> {
             String id = input("Prescription ID:");
@@ -233,7 +233,7 @@ public class HealthcareController {
 
         view.deletePrescriptionBtn.addActionListener(e -> delete(view.prescriptionTable));
 
-        /* ---------- REFERRAL ---------- */
+
 
         view.addReferralBtn.addActionListener(e -> {
             String id = input("Referral ID:");
@@ -293,7 +293,7 @@ public class HealthcareController {
         });
     }
 
-    /* ================= SAVE ================= */
+    // Save the data
 
     private void saveData() {
         save("patients.csv", view.patientTable);
@@ -303,7 +303,7 @@ public class HealthcareController {
         save("referrals.csv", view.referralTable);
     }
 
-    /* ================= HELPERS ================= */
+    // Helper functions
 
     private DefaultTableModel model(JTable t) {
         return (DefaultTableModel) t.getModel();

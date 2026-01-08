@@ -14,10 +14,25 @@ public class Appointment {
         this.date = date;
     }
 
-    public String getAppointmentId() { return appointmentId; }
-    public String getPatientId() { return patientId; }
-    public String getClinicianId() { return clinicianId; }
-    public String getDate() { return date; }
+    public String getAppointmentId()
+    {
+        return appointmentId;
+    }
+
+    public String getPatientId()
+    {
+        return patientId;
+    }
+
+    public String getClinicianId()
+    {
+        return clinicianId;
+    }
+
+    public String getDate()
+    {
+        return date;
+    }
 
     public static Appointment fromCSV(String line) {
         String[] parts = line.split(",");
