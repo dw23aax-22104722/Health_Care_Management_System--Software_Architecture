@@ -20,14 +20,14 @@ public class Appointment {
     public String getDate() { return date; }
 
     public static Appointment fromCSV(String line) {
-        String[] parts = line.split(" ");
+        String[] parts = line.split(",");
 
         // appointment_id patient_id clinician_id facility_id appointment_date ...
         return new Appointment(
                 parts[0],
                 parts[1],
                 parts[2],
-                parts[4]
+                parts[3]
         );
     }
 }

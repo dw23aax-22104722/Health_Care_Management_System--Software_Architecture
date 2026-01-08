@@ -31,7 +31,17 @@ public class Clinician {
     }
 
     public static Clinician fromCSV(String line) {
-        String[] c = line.split(" ");
-        return new Clinician(c[0], c[1] + " " + c[2] + " " + c[3], c[4]);
+        String[] parts = line.split(",");
+
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Invalid clinician CSV line: " + line);
+        }
+
+        String id = parts[0];
+        String name = parts[1];
+        String role = parts[2];
+
+        return new Clinician(id, name, role);
     }
+
 }

@@ -23,7 +23,7 @@ public class Referral {
 
 
     public static Referral fromCSV(String line) {
-        String[] parts = line.split(" ");
+        String[] parts = line.split(",");
 
         return new Referral(
                 parts[0],

@@ -12,14 +12,8 @@ public class HealthcareController {
 
     private HealthcareView view;
 
-    // allowed clinician roles
-    private static final Set<String> VALID_ROLES = Set.of(
-            "GP",
-            "Consultant",
-            "Senior_Nurse",
-            "Practice_Nurse",
-            "Staff_Nurse"
-    );
+    private static final Set<String> VALID_PRESCRIPTION_STATUS =
+            Set.of("Issued", "Collected");
 
     public HealthcareController(HealthcareView view) {
         this.view = view;
@@ -27,48 +21,48 @@ public class HealthcareController {
         registerListeners();
     }
 
-    // ================= LOAD CSV =================
+    /* ================= LOAD CSV ================= */
+
     private void loadData() {
 
-        // ================= PATIENTS =================
-        DefaultTableModel pModel = (DefaultTableModel) view.patientTable.getModel();
         for (String line : CSVUtil.read("patients.csv")) {
             Patient p = Patient.fromCSV(line);
-            pModel.addRow(new Object[]{p.getId(), p.getName(), p.getDob()});
-        }
-
-        // ================= CLINICIANS =================
-        DefaultTableModel cModel = (DefaultTableModel) view.clinicianTable.getModel();
-        for (String line : CSVUtil.read("clinicians.csv")) {
-            Clinician c = Clinician.fromCSV(line);
-            cModel.addRow(new Object[]{c.getID(), c.getName(), c.getRole()});
-        }
-
-        // ================= APPOINTMENTS =================
-        DefaultTableModel aModel = (DefaultTableModel) view.appointmentTable.getModel();
-        for (String line : CSVUtil.read("appointments.csv")) {
-            Appointment a = Appointment.fromCSV(line);
-            aModel.addRow(new Object[]{a.getAppointmentId(), a.getPatientId(), a.getClinicianId(), a.getDate()});
-        }
-
-        // ================= PRESCRIPTIONS =================
-        DefaultTableModel prModel = (DefaultTableModel) view.prescriptionTable.getModel();
-        for (String line : CSVUtil.read("prescriptions.csv")) {
-            Prescription pr = Prescription.fromCSV(line);
-            prModel.addRow(new Object[]{
-                    pr.getId(),
-                    pr.getPatientId(),
-                    pr.getClinicianId(),
-                    pr.getMedication(),
-                    pr.getStatus()
+            model(view.patientTable).addRow(new Object[]{
+                    p.getId(), p.getName(), p.getDob()
             });
         }
 
-        // ================= REFERRALS =================
-        DefaultTableModel rModel = (DefaultTableModel) view.referralTable.getModel();
+        for (String line : CSVUtil.read("clinicians.csv")) {
+            Clinician c = Clinician.fromCSV(line);
+            model(view.clinicianTable).addRow(new Object[]{
+                    c.getID(), c.getName(), c.getRole()
+            });
+        }
+
+        for (String line : CSVUtil.read("appointments.csv")) {
+            Appointment a = Appointment.fromCSV(line);
+            model(view.appointmentTable).addRow(new Object[]{
+                    a.getAppointmentId(),
+                    a.getPatientId(),
+                    a.getClinicianId(),
+                    a.getDate()
+            });
+        }
+
+        for (String line : CSVUtil.read("prescriptions.csv")) {
+            Prescription p = Prescription.fromCSV(line);
+            model(view.prescriptionTable).addRow(new Object[]{
+                    p.getId(),
+                    p.getPatientId(),
+                    p.getClinicianId(),
+                    p.getMedication(),
+                    p.getStatus()
+            });
+        }
+
         for (String line : CSVUtil.read("referrals.csv")) {
             Referral r = Referral.fromCSV(line);
-            rModel.addRow(new Object[]{
+            model(view.referralTable).addRow(new Object[]{
                     r.getId(),
                     r.getPatientId(),
                     r.getFromClinician(),
@@ -77,181 +71,221 @@ public class HealthcareController {
         }
     }
 
-    // ================= LISTENERS =================
+    /* ================= LISTENERS ================= */
+
     private void registerListeners() {
 
-        // ===== ADD PATIENT =====
+        /* ---------- PATIENT ---------- */
+
         view.addPatientBtn.addActionListener(e -> {
-            String id = JOptionPane.showInputDialog("Patient ID:");
-            if (existsInTable((DefaultTableModel) view.patientTable.getModel(), id, 0)) {
-                JOptionPane.showMessageDialog(null, "Patient ID already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            String name = JOptionPane.showInputDialog("Name:");
-            String dob = JOptionPane.showInputDialog("DOB:");
-            ((DefaultTableModel) view.patientTable.getModel()).addRow(new Object[]{id, name, dob});
+            String id = input("Patient ID:");
+            if (idExists(view.patientTable, id, -1)) return;
+
+            model(view.patientTable).addRow(new Object[]{
+                    id, input("Name:"), input("DOB:")
+            });
         });
 
-        // ===== EDIT PATIENT =====
         view.editPatientBtn.addActionListener(e -> {
-            int row = view.patientTable.getSelectedRow();
-            if (row >= 0) {
-                DefaultTableModel m = (DefaultTableModel) view.patientTable.getModel();
-                m.setValueAt(JOptionPane.showInputDialog("Name:"), row, 1);
-                m.setValueAt(JOptionPane.showInputDialog("DOB:"), row, 2);
-            }
+            int r = selected(view.patientTable);
+            if (r < 0) return;
+
+            String id = input("Patient ID:");
+            if (idExists(view.patientTable, id, r)) return;
+
+            set(view.patientTable, r, new Object[]{
+                    id, input("Name:"), input("DOB:")
+            });
         });
 
-        // ===== DELETE PATIENT =====
-        view.deletePatientBtn.addActionListener(e -> {
-            int row = view.patientTable.getSelectedRow();
-            if (row >= 0) ((DefaultTableModel) view.patientTable.getModel()).removeRow(row);
-        });
+        view.deletePatientBtn.addActionListener(e -> delete(view.patientTable));
 
-        // ===== ADD CLINICIAN =====
+        /* ---------- CLINICIAN ---------- */
+
         view.addClinicianBtn.addActionListener(e -> {
-            String id = JOptionPane.showInputDialog("Clinician ID:");
-            if (existsInTable((DefaultTableModel) view.clinicianTable.getModel(), id, 0)) {
-                JOptionPane.showMessageDialog(null, "Clinician ID already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            String id = input("Clinician ID:");
+            if (idExists(view.clinicianTable, id, -1)) return;
 
-            String name = JOptionPane.showInputDialog("Name:");
-            String role = JOptionPane.showInputDialog(
-                    "Role (GP, Consultant, Senior_Nurse, Practice_Nurse, Staff_Nurse):"
-            );
-
-            if (!VALID_ROLES.contains(role)) {
-                JOptionPane.showMessageDialog(null, "Invalid clinician role!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            ((DefaultTableModel) view.clinicianTable.getModel()).addRow(new Object[]{id, name, role});
+            model(view.clinicianTable).addRow(new Object[]{
+                    id, input("Name:"), input("Role:")
+            });
         });
 
-        // ===== EDIT CLINICIAN =====
         view.editClinicianBtn.addActionListener(e -> {
-            int row = view.clinicianTable.getSelectedRow();
-            if (row >= 0) {
-                String name = JOptionPane.showInputDialog("Name:");
-                String role = JOptionPane.showInputDialog(
-                        "Role (GP, Consultant, Senior_Nurse, Practice_Nurse, Staff_Nurse):"
-                );
+            int r = selected(view.clinicianTable);
+            if (r < 0) return;
 
-                if (!VALID_ROLES.contains(role)) {
-                    JOptionPane.showMessageDialog(null, "Invalid clinician role!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            String id = input("Clinician ID:");
+            if (idExists(view.clinicianTable, id, r)) return;
 
-                DefaultTableModel m = (DefaultTableModel) view.clinicianTable.getModel();
-                m.setValueAt(name, row, 1);
-                m.setValueAt(role, row, 2);
-            }
+            set(view.clinicianTable, r, new Object[]{
+                    id, input("Name:"), input("Role:")
+            });
         });
 
-        // ===== DELETE CLINICIAN =====
-        view.deleteClinicianBtn.addActionListener(e -> {
-            int row = view.clinicianTable.getSelectedRow();
-            if (row >= 0) ((DefaultTableModel) view.clinicianTable.getModel()).removeRow(row);
-        });
+        view.deleteClinicianBtn.addActionListener(e -> delete(view.clinicianTable));
 
-        // ===== ADD APPOINTMENT =====
+        /* ---------- APPOINTMENT (GP ONLY) ---------- */
+
         view.addAppointmentBtn.addActionListener(e -> {
-            DefaultTableModel aModel = (DefaultTableModel) view.appointmentTable.getModel();
-            String id = JOptionPane.showInputDialog("Appointment ID:");
-            if (existsInTable(aModel, id, 0)) {
-                JOptionPane.showMessageDialog(null, "Appointment ID already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            String id = input("Appointment ID:");
+            if (idExists(view.appointmentTable, id, -1)) return;
+
+            String pid = input("Patient ID:");
+            String cid = input("Clinician ID:");
+
+            if (!rowExists(view.patientTable, pid) ||
+                    !rowExists(view.clinicianTable, cid)) {
+                error("Invalid Patient or Clinician ID");
                 return;
             }
 
-            String pid = JOptionPane.showInputDialog("Patient ID:");
-            if (!existsInTable((DefaultTableModel) view.patientTable.getModel(), pid, 0)) {
-                JOptionPane.showMessageDialog(null, "Patient ID does not exist!", "Error", JOptionPane.ERROR_MESSAGE);
+            if (!"GP".equals(getClinicianRole(cid))) {
+                error("Only GPs can manage appointments");
                 return;
             }
 
-            String cid = JOptionPane.showInputDialog("Clinician ID:");
-            if (!existsInTable((DefaultTableModel) view.clinicianTable.getModel(), cid, 0)) {
-                JOptionPane.showMessageDialog(null, "Clinician ID does not exist!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (!getClinicianType(cid).equalsIgnoreCase("GP")) {
-                JOptionPane.showMessageDialog(null, "Only GPs can handle appointments!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String date = JOptionPane.showInputDialog("Date:");
-            aModel.addRow(new Object[]{id, pid, cid, date});
+            model(view.appointmentTable).addRow(new Object[]{
+                    id, pid, cid, input("Date:")
+            });
         });
 
-        // ===== ADD REFERRAL =====
+        view.editAppointmentBtn.addActionListener(e -> {
+            int r = selected(view.appointmentTable);
+            if (r < 0) return;
+
+            String id = input("Appointment ID:");
+            if (idExists(view.appointmentTable, id, r)) return;
+
+            String pid = input("Patient ID:");
+            String cid = input("Clinician ID:");
+
+            if (!rowExists(view.patientTable, pid) ||
+                    !rowExists(view.clinicianTable, cid)) {
+                error("Invalid Patient or Clinician ID");
+                return;
+            }
+
+            if (!"GP".equals(getClinicianRole(cid))) {
+                error("Only GPs can manage appointments");
+                return;
+            }
+
+            set(view.appointmentTable, r, new Object[]{
+                    id, pid, cid, input("Date:")
+            });
+        });
+
+        view.deleteAppointmentBtn.addActionListener(e -> delete(view.appointmentTable));
+
+        /* ---------- PRESCRIPTION ---------- */
+
+        view.addPrescriptionBtn.addActionListener(e -> {
+            String id = input("Prescription ID:");
+            if (idExists(view.prescriptionTable, id, -1)) return;
+
+            String pid = input("Patient ID:");
+            String cid = input("Clinician ID:");
+            String status = input("Status (Issued/Collected):");
+
+            if (!rowExists(view.patientTable, pid) ||
+                    !rowExists(view.clinicianTable, cid)) {
+                error("Invalid Patient or Clinician ID");
+                return;
+            }
+
+            if (!VALID_PRESCRIPTION_STATUS.contains(status)) {
+                error("Invalid prescription status");
+                return;
+            }
+
+            model(view.prescriptionTable).addRow(new Object[]{
+                    id, pid, cid, input("Medication:"), status
+            });
+        });
+
+        view.editPrescriptionBtn.addActionListener(e -> {
+            int r = selected(view.prescriptionTable);
+            if (r < 0) return;
+
+            String id = input("Prescription ID:");
+            if (idExists(view.prescriptionTable, id, r)) return;
+
+            String pid = input("Patient ID:");
+            String cid = input("Clinician ID:");
+            String status = input("Status (Issued/Collected):");
+
+            if (!rowExists(view.patientTable, pid) ||
+                    !rowExists(view.clinicianTable, cid)) {
+                error("Invalid Patient or Clinician ID");
+                return;
+            }
+
+            if (!VALID_PRESCRIPTION_STATUS.contains(status)) {
+                error("Invalid prescription status");
+                return;
+            }
+
+            set(view.prescriptionTable, r, new Object[]{
+                    id, pid, cid, input("Medication:"), status
+            });
+        });
+
+        view.deletePrescriptionBtn.addActionListener(e -> delete(view.prescriptionTable));
+
+        /* ---------- REFERRAL ---------- */
+
         view.addReferralBtn.addActionListener(e -> {
-            String id = JOptionPane.showInputDialog("Referral ID:");
-            if (existsInTable((DefaultTableModel) view.referralTable.getModel(), id, 0)) {
-                JOptionPane.showMessageDialog(null, "Referral ID already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            String id = input("Referral ID:");
+            if (idExists(view.referralTable, id, -1)) return;
 
-            String pid = JOptionPane.showInputDialog("Patient ID:");
-            if (!existsInTable((DefaultTableModel) view.patientTable.getModel(), pid, 0)) {
-                JOptionPane.showMessageDialog(null, "Patient ID does not exist!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String from = JOptionPane.showInputDialog("From Clinician:");
-            String to = JOptionPane.showInputDialog("To Clinician:");
+            String pid = input("Patient ID:");
+            String from = input("From Clinician ID:");
+            String to = input("To Clinician ID:");
 
             if (from.equals(to)) {
-                JOptionPane.showMessageDialog(null, "From and To clinicians must be different!", "Error", JOptionPane.ERROR_MESSAGE);
+                error("Referring clinician and receiving clinician must be different");
                 return;
             }
 
-            if (!existsInTable((DefaultTableModel) view.clinicianTable.getModel(), from, 0) ||
-                    !existsInTable((DefaultTableModel) view.clinicianTable.getModel(), to, 0)) {
-                JOptionPane.showMessageDialog(null, "Clinician ID does not exist!", "Error", JOptionPane.ERROR_MESSAGE);
+            if (!rowExists(view.patientTable, pid) ||
+                    !rowExists(view.clinicianTable, from) ||
+                    !rowExists(view.clinicianTable, to)) {
+                error("Invalid Patient or Clinician ID");
                 return;
             }
 
-            Referral r = new Referral(id, pid, from, to);
-            ReferralManager.getInstance().addReferral(r);
-            ((DefaultTableModel) view.referralTable.getModel()).addRow(new Object[]{id, pid, from, to});
+            model(view.referralTable).addRow(new Object[]{id, pid, from, to});
         });
 
-        // ===== EDIT REFERRAL =====
         view.editReferralBtn.addActionListener(e -> {
-            int row = view.referralTable.getSelectedRow();
-            if (row >= 0) {
-                String pid = JOptionPane.showInputDialog("Patient ID:");
-                String from = JOptionPane.showInputDialog("From Clinician:");
-                String to = JOptionPane.showInputDialog("To Clinician:");
+            int r = selected(view.referralTable);
+            if (r < 0) return;
 
-                if (from.equals(to)) {
-                    JOptionPane.showMessageDialog(null, "From and To clinicians must be different!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            String id = input("Referral ID:");
+            if (idExists(view.referralTable, id, r)) return;
 
-                if (!existsInTable((DefaultTableModel) view.patientTable.getModel(), pid, 0) ||
-                        !existsInTable((DefaultTableModel) view.clinicianTable.getModel(), from, 0) ||
-                        !existsInTable((DefaultTableModel) view.clinicianTable.getModel(), to, 0)) {
-                    JOptionPane.showMessageDialog(null, "Invalid ID provided!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            String pid = input("Patient ID:");
+            String from = input("From Clinician ID:");
+            String to = input("To Clinician ID:");
 
-                DefaultTableModel m = (DefaultTableModel) view.referralTable.getModel();
-                m.setValueAt(pid, row, 1);
-                m.setValueAt(from, row, 2);
-                m.setValueAt(to, row, 3);
+            if (from.equals(to)) {
+                error("Referring clinician and receiving clinician must be different");
+                return;
             }
+
+            if (!rowExists(view.patientTable, pid) ||
+                    !rowExists(view.clinicianTable, from) ||
+                    !rowExists(view.clinicianTable, to)) {
+                error("Invalid Patient or Clinician ID");
+                return;
+            }
+
+            set(view.referralTable, r, new Object[]{id, pid, from, to});
         });
 
-        // ===== DELETE REFERRAL =====
-        view.deleteReferralBtn.addActionListener(e -> {
-            int row = view.referralTable.getSelectedRow();
-            if (row >= 0) ((DefaultTableModel) view.referralTable.getModel()).removeRow(row);
-        });
+        view.deleteReferralBtn.addActionListener(e -> delete(view.referralTable));
 
-        // ===== SAVE ON EXIT =====
         view.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 saveData();
@@ -259,46 +293,89 @@ public class HealthcareController {
         });
     }
 
-    // ================= SAVE CSV =================
+    /* ================= SAVE ================= */
+
     private void saveData() {
-        saveTable("patients.csv", view.patientTable);
-        saveTable("appointments.csv", view.appointmentTable);
-        saveTable("prescriptions.csv", view.prescriptionTable);
-        saveTable("referrals.csv", view.referralTable);
-        saveTable("clinicians.csv", view.clinicianTable);
+        save("patients.csv", view.patientTable);
+        save("clinicians.csv", view.clinicianTable);
+        save("appointments.csv", view.appointmentTable);
+        save("prescriptions.csv", view.prescriptionTable);
+        save("referrals.csv", view.referralTable);
     }
 
-    private void saveTable(String file, JTable table) {
-        ArrayList<String> lines = new ArrayList<>();
-        DefaultTableModel m = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < m.getRowCount(); i++) {
-            StringBuilder line = new StringBuilder();
-            for (int j = 0; j < m.getColumnCount(); j++) {
-                line.append(m.getValueAt(i, j));
-                if (j < m.getColumnCount() - 1) line.append(",");
+    /* ================= HELPERS ================= */
+
+    private DefaultTableModel model(JTable t) {
+        return (DefaultTableModel) t.getModel();
+    }
+
+    private int selected(JTable t) {
+        if (t.getSelectedRow() < 0) error("Select a row first");
+        return t.getSelectedRow();
+    }
+
+    private void delete(JTable t) {
+        int r = selected(t);
+        if (r >= 0) model(t).removeRow(r);
+    }
+
+    private boolean idExists(JTable t, String id, int ignoreRow) {
+        for (int i = 0; i < model(t).getRowCount(); i++) {
+            if (i != ignoreRow &&
+                    model(t).getValueAt(i, 0).equals(id)) {
+                error("ID already exists");
+                return true;
             }
-            lines.add(line.toString());
-        }
-        CSVUtil.write(file, lines);
-    }
-
-    // ================= HELPERS =================
-    private boolean existsInTable(DefaultTableModel model, String id, int col) {
-        for (int i = 0; i < model.getRowCount(); i++) {
-            if (model.getValueAt(i, col).equals(id)) return true;
         }
         return false;
     }
 
-    private String getClinicianType(String clinicianId) {
-        DefaultTableModel cModel = (DefaultTableModel) view.clinicianTable.getModel();
-        for (int i = 0; i < cModel.getRowCount(); i++) {
-            if (cModel.getValueAt(i, 0).equals(clinicianId)) {
-                return (String) cModel.getValueAt(i, 2);
-            }
-        }
+    private boolean rowExists(JTable t, String id) {
+        for (int i = 0; i < model(t).getRowCount(); i++)
+            if (model(t).getValueAt(i, 0).equals(id))
+                return true;
+        return false;
+    }
+
+    private void set(JTable t, int r, Object[] vals) {
+        for (int i = 0; i < vals.length; i++)
+            model(t).setValueAt(vals[i], r, i);
+    }
+
+    private String getClinicianRole(String id) {
+        for (int i = 0; i < model(view.clinicianTable).getRowCount(); i++)
+            if (model(view.clinicianTable).getValueAt(i, 0).equals(id))
+                return (String) model(view.clinicianTable).getValueAt(i, 2);
         return "";
     }
+
+    private String input(String m) {
+        return JOptionPane.showInputDialog(m);
+    }
+
+    private void error(String m) {
+        JOptionPane.showMessageDialog(null, m);
+    }
+
+    private void save(String fileName, JTable table) {
+        DefaultTableModel m = model(table);
+        ArrayList<String> lines = new ArrayList<>();
+
+        for (int i = 0; i < m.getRowCount(); i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < m.getColumnCount(); j++) {
+                sb.append(m.getValueAt(i, j));
+                if (j < m.getColumnCount() - 1) sb.append(",");
+            }
+            lines.add(sb.toString());
+        }
+
+        CSVUtil.write(fileName, lines);
+    }
 }
+
+
+
+
 
 

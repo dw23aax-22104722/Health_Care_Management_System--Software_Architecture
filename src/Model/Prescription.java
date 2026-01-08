@@ -23,14 +23,14 @@ public class Prescription {
     public String getStatus() { return status; }
 
     public static Prescription fromCSV(String line) {
-        String[] parts = line.split(" ");
+        String[] parts = line.split(",");
 
         // prescription_id patient_id clinician_id appointment_id date medication ...
         String id = parts[0];
         String patientId = parts[1];
         String clinicianId = parts[2];
-        String medication = parts[5];
-        String status = parts[parts.length - 3];
+        String medication = parts[3];
+        String status = parts[4];
 
         return new Prescription(id, patientId, clinicianId, medication, status);
     }

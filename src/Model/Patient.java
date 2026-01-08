@@ -19,13 +19,13 @@ public class Patient {
     public String getDob() { return dob; }
 
     public static Patient fromCSV(String line) {
-        String[] parts = line.split(" ");
+        String[] parts = line.split(",");
 
-        // patient_id first_name last_name dob ...
-        String id = parts[0];
-        String name = parts[1] + " " + parts[2];
-        String dob = parts[3];
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Invalid patient CSV line: " + line);
+        }
 
-        return new Patient(id, name, dob);
+        return new Patient(parts[0], parts[1], parts[2]);
     }
+
 }
