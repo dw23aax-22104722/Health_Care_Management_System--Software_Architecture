@@ -12,6 +12,9 @@ public class HealthcareController {
 
     private HealthcareView view;
 
+    // Singleton referral manager (MODEL)
+    private ReferralManager referralManager = ReferralManager.getInstance();
+
     private static final Set<String> VALID_PRESCRIPTION_STATUS =
             Set.of("Issued", "Collected");
 
@@ -62,6 +65,7 @@ public class HealthcareController {
 
         for (String line : CSVUtil.read("referrals.csv")) {
             Referral r = Referral.fromCSV(line);
+            referralManager.addReferral(r);
             model(view.referralTable).addRow(new Object[]{
                     r.getId(),
                     r.getPatientId(),
@@ -255,6 +259,8 @@ public class HealthcareController {
                 return;
             }
 
+            referralManager.addReferral(new Referral(id, pid, from, to));
+
             model(view.referralTable).addRow(new Object[]{id, pid, from, to});
         });
 
@@ -280,6 +286,8 @@ public class HealthcareController {
                 error("Invalid Patient or Clinician ID");
                 return;
             }
+
+            referralManager.addReferral(new Referral(id, pid, from, to));
 
             set(view.referralTable, r, new Object[]{id, pid, from, to});
         });
