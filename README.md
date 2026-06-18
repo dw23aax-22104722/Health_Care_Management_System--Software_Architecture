@@ -62,6 +62,12 @@ b.) Clinician must exist
 c.) Only clinicians with the role GP can manage appointments
 
 
+
+
+
+
+
+
 4.) Prescription Management
 
 Manage prescription records containing:
