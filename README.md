@@ -61,6 +61,7 @@ b.) Clinician must exist
 
 c.) Only clinicians with the role GP can manage appointments
 
+
 4.) Prescription Management
 
 Manage prescription records containing:
@@ -86,6 +87,7 @@ b.) Clinician must exist
 
 c.) Status must be either Issued or Collected
 
+
 5.) Referral Management
 
 Manage referral records containing:
@@ -109,6 +111,7 @@ a.) Patient must exist
 b.) Both clinicians must exist
 
 c.) A clinician cannot refer a patient to themselves
+
 
 Design Patterns
 
@@ -164,6 +167,7 @@ Example:
 
 ReferralManager referralManager = ReferralManager.getInstance();
 
+
 Data Storage
 
 The application uses CSV files as its data source and storage mechanism.
@@ -179,6 +183,7 @@ Files used:
 When the application starts, records are loaded from these files.
 
 When the application closes, any changes made through the GUI are automatically saved back to the corresponding CSV files.
+
 
 Graphical User Interface
 
@@ -198,6 +203,7 @@ Available tabs:
 - Prescriptions
 - Referrals
 - Clinicians
+
 
 Project Structure
 
