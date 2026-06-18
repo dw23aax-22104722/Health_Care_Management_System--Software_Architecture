@@ -56,7 +56,9 @@ Operations:
 Validation:
 
 a.) Patient must exist
+
 b.) Clinician must exist
+
 c.) Only clinicians with the role GP can manage appointments
 
 4.) Prescription Management
@@ -79,7 +81,9 @@ Operations:
 Validation:
 
 a.) Patient must exist
+
 b.) Clinician must exist
+
 c.) Status must be either Issued or Collected
 
 5.) Referral Management
@@ -101,7 +105,9 @@ Operations:
 Validation:
 
 a.) Patient must exist
+
 b.) Both clinicians must exist
+
 c.) A clinician cannot refer a patient to themselves
 
 Design Patterns
