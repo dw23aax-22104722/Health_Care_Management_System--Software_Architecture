@@ -22,6 +22,8 @@ Operations:
 - Delete patient
 - View patient records
 
+|
+
 2.) Clinician Management
 
 Manage clinician records containing:
@@ -36,6 +38,8 @@ Operations:
 - Edit clinician
 - Delete clinician
 - View clinician records
+
+|
 
 3.) Appointment Management
 
@@ -61,12 +65,7 @@ b.) Clinician must exist
 
 c.) Only clinicians with the role GP can manage appointments
 
-
-
-
-
-
-
+|
 
 4.) Prescription Management
 
@@ -93,6 +92,7 @@ b.) Clinician must exist
 
 c.) Status must be either Issued or Collected
 
+|
 
 5.) Referral Management
 
@@ -118,6 +118,7 @@ b.) Both clinicians must exist
 
 c.) A clinician cannot refer a patient to themselves
 
+|
 
 Design Patterns
 
